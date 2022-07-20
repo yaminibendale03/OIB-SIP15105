@@ -1,326 +1,160 @@
-package com.pack1;
+package com.pack2;
 
 import javax.swing.*;
+import javax.swing.plaf.ButtonUI;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.Exception;
-import java.util.Timer;
-import java.util.TimerTask;
 
-//create CreateLoginForm class to create login form 
-//class extends JFrame to create a window where our component add 
-//class implements ActionListener to perform an action on button click 
-public class login extends JFrame implements ActionListener 
-{
-    // initialize button, panel, label, and text field
-    JButton b1;
-    JPanel newPanel;
-    JLabel userLabel, passLabel;  
-    final JTextField textField1, textField2;
+public class Main extends JFrame {
+    JTextField guess, bestscore, totalguess;
+    ButtonListener buttonListener;
+    ButtonListener2 buttonListener2;
+    ButtonListener3 buttonListener3;
+    JLabel inputlabel, guesslabel, trylabel, bestscorelabel, totalguesslabel, imglabel;
 
-    // calling constructor
-    login() 
-    {
-        // create label for user name
-        userLabel = new JLabel();
-        userLabel.setText(" Username :"); // set label value for textField1
+    int rand = (int) (Math.random() * 100);
+    int count = 0;
 
-        // create text field to get user name from the user
-        textField1 = new JTextField(15); // set length of the text
+    public Main() {
+        Container c = getContentPane();
+        c.setLayout(null);
+        c.setBackground(Color.WHITE);
 
-        // create label for password
-        passLabel = new JLabel();
-        passLabel.setText(" Password :"); // set label value for textField2
+        guesslabel = new JLabel("Guess the Number ?");
+        guesslabel.setForeground(Color.RED);
+        guesslabel.setFont(new Font("times new roman", Font.BOLD, 24));
+        guesslabel.setSize(270, 20);
+        guesslabel.setLocation(70, 70);
 
-        // create text field to get password from the user
-        textField2 = new JPasswordField(8); // set length for the password
+        inputlabel = new JLabel("Enter a number between 1-100");
+        inputlabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        inputlabel.setSize(270, 20);
+        inputlabel.setLocation(70, 90);
 
-        // create submit button
-        b1 = new JButton(" SUBMIT "); // set label to button
+        trylabel = new JLabel("Try and guess it !");
+        trylabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        trylabel.setSize(270, 20);
+        trylabel.setLocation(110, 160);
 
-        // create panel to put form elements
-        newPanel = new JPanel(new GridLayout(3, 1));
-        newPanel.add(userLabel); // set user name label to panel
-        newPanel.add(textField1); // set text field to panel
-        newPanel.add(passLabel); // set password label to panel
-        newPanel.add(textField2); // set text field to panel
-        newPanel.add(b1); // set button to panel
+        guess = new JTextField(10);
+        guess.setSize(50, 30);
+        guess.setLocation(140, 120);
 
-        // set border to panel
-        add(newPanel, BorderLayout.CENTER);
+        bestscore = new JTextField(10);
+        bestscore.setSize(30, 20);
+        bestscore.setLocation(10, 10);
 
-        // perform action on button click
-        b1.addActionListener(this); // add action listener to button
-        setTitle("Login Form "); // set title to the login form
-    }
+        bestscorelabel = new JLabel("Best Score");
+        bestscorelabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        bestscorelabel.setSize(270, 20);
+        bestscorelabel.setLocation(50, 10);
 
-    // define abstract method actionPerformed() which will be called on button click
-    public void actionPerformed(ActionEvent ae) // pass action listener as a parameter
-    {
-        String userValue = textField1.getText(); // get user entered user name from the textField1
-        String passValue = textField2.getText(); // get user entered password from the textField2
+        totalguess = new JTextField(10);
+        totalguess.setSize(30, 20);
+        totalguess.setLocation(10, 40);
 
-        if (!passValue.equals(""))
-            new OnlineTestBegin(userValue);
-        else 
-        {
-            textField2.setText("Enter Password");
-            actionPerformed(ae);
-        }
-    }
-}
+        totalguesslabel = new JLabel("Number of Guesses");
+        totalguesslabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        totalguesslabel.setSize(270, 20);
+        totalguesslabel.setLocation(50, 40);
 
-class OnlineTestBegin extends JFrame implements ActionListener 
-{
-    JLabel l;
-    JLabel l1;
+        imglabel = new JLabel("");
+        imglabel.setIcon(
+                new ImageIcon("C:\\Users\\YAMINI BENDALE\\eclipse-workspace\\Java\\src\\com\\pack2\\download.png"));
+        imglabel.setBounds(280, 10, 500, 350);
 
-    JRadioButton jb[] = new JRadioButton[6];
-    JButton b1, b2, log;
-    ButtonGroup bg;
-    int count = 0, current = 0, x = 1, y = 1, now = 0;
-    int m[] = new int[10];
-    Timer timer = new Timer();
+        JButton guessbutton = new JButton("Guess");
+        guessbutton.setSize(100, 30);
+        guessbutton.setLocation(110, 190);
+        guessbutton.setBackground(Color.LIGHT_GRAY);
+        buttonListener = new ButtonListener();
+        guessbutton.addActionListener(buttonListener);
 
-    OnlineTestBegin(String s) 
-    {
-        super(s);
-        // count down();
-        l = new JLabel();
-        l1 = new JLabel();
+        JButton giveupbutton = new JButton("Give up!");
+        giveupbutton.setSize(100, 30);
+        giveupbutton.setLocation(50, 240);
+        giveupbutton.setBackground(Color.LIGHT_GRAY);
+        buttonListener2 = new ButtonListener2();
+        giveupbutton.addActionListener(buttonListener2);
 
-        add(l);
-        add(l1);
-        bg = new ButtonGroup();
-        for (int i = 0; i < 5; i++) 
-        {
-            jb[i] = new JRadioButton();
-            add(jb[i]);
-            bg.add(jb[i]);
-        }
-        
-        b1 = new JButton("Save and Next");
-        b2 = new JButton("Save for later");
-        b1.addActionListener(this);
-        b2.addActionListener(this);
-        add(b1);
-        add(b2);
-        set();
-        l.setBounds(30, 40, 450, 20);
-        l1.setBounds(20, 20, 450, 20);
-        jb[0].setBounds(50, 80, 100, 20);
-        jb[1].setBounds(50, 110, 100, 20);
-        jb[2].setBounds(50, 140, 100, 20);
-        jb[3].setBounds(50, 170, 100, 20);
+        JButton playagainbutton = new JButton("Play Again!");
+        playagainbutton.setSize(100, 30);
+        playagainbutton.setLocation(170, 240);
+        playagainbutton.setBackground(Color.LIGHT_GRAY);
+        buttonListener3 = new ButtonListener3();
+        playagainbutton.addActionListener(buttonListener3);
 
-        b1.setBounds(95, 240, 140, 30);
-        b2.setBounds(270, 240, 150, 30);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null);
-        setLocation(250, 100);
+        c.add(bestscorelabel);
+        c.add(totalguesslabel);
+        c.add(trylabel);
+        c.add(imglabel);
+        c.add(guesslabel);
+        c.add(inputlabel);
+        c.add(guess);
+        c.add(bestscore);
+        c.add(totalguess);
+        c.add(guessbutton);
+        c.add(giveupbutton);
+        c.add(playagainbutton);
+
+        bestscore.setEditable(false);
+        totalguess.setEditable(false);
+        setTitle("GUESS THE NUMBER");
+        setSize(500, 350);
         setVisible(true);
-        setSize(600, 350);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
 
-        setTitle(" Online Exam ");
-        
-        timer.scheduleAtFixedRate(new TimerTask() 
-        {
-            int i = 600;
-            public void run() 
-            {
+    private class ButtonListener implements ActionListener {
+        int bestScore = 100;
 
-                l1.setText("Time left: " + i);
-                i--;
-
-                if (i < 0) 
-                {
-                    timer.cancel();
-                    l1.setText("Time Out");
+        public void actionPerformed(ActionEvent e) {
+            int a = Integer.parseInt(guess.getText());
+            count = count + 1;
+            if (a < rand) {
+                trylabel.setText(a + " is low, try again!!");
+            } else if (a > rand) {
+                trylabel.setText(a + " is high, try again!!");
+            } else {
+                trylabel.setText("Your guess is correct, You win!!");
+                if (count < bestScore) {
+                    bestScore = count;
+                    bestscore.setText(bestScore + "");
+                } else {
+                    bestscore.setText("" + bestScore);
                 }
+                guess.setEditable(false);
             }
-        },0, 1000);
-    }
-    public void actionPerformed(ActionEvent e) 
-    {
-        if (e.getSource() == b1) 
-        {
-            if (check())
-                count = count + 1;
-            current++;
-            set();
-            if (current == 9) 
-            {
-                b1.setEnabled(false);
-                b2.setText("Result");
-            }
+
+            guess.requestFocus();
+            guess.selectAll();
+            totalguess.setText(count + "");
         }
-        if (e.getActionCommand().equals("Save for later")) 
-        {
-            JButton bk = new JButton("Review" + x);
-            bk.setBounds(480, 20 + 30 * x, 100, 30);
-            add(bk);
-            bk.addActionListener(this);
-            m[x] = current;
-            x++;
-            current++;
-            set();
-            if (current == 9)
-                b2.setText("Result");
-            setVisible(false);
-            setVisible(true);
-        }
-        for (int i = 0, y = 1; i < x; i++, y++) 
-        {
-            if (e.getActionCommand().equals("Review" + y)) 
-            {
-                if (check())
-                    count = count + 1;
-                now = current;
-                current = m[y];
-                set();
-                ((JButton) e.getSource()).setEnabled(false);
-                current = now;
-            }
-        }
-        if (e.getActionCommand().equals("Result")) 
-        {
-            if (check())
-                count = count + 1;
-            current++;
-            // System.out.println("correct ans="+count);
-            JOptionPane.showMessageDialog(this, "Score =" + count);
-            System.exit(0);
-        }
-    }
-    void set() 
-    {
-        jb[4].setSelected(true);
-        if (current == 0) 
-        {
-            l.setText("Que1: Who is known as father of java programming language?");
-            jb[0].setText("charles Babbage");
-            jb[1].setText("James Gosling");
-            jb[2].setText("M.P.Java");
-            jb[3].setText("Blais Pascal");
-        }
-        if (current == 1) 
-        {
-            l.setText("Que2: Number of primitive data types in java are?");
-            jb[0].setText("6");
-            jb[1].setText("7");
-            jb[2].setText("8");
-            jb[3].setText("9");
-        }
-        if (current == 2) 
-        {
-            l.setText("Que3: Where is system class defined?");
-            jb[0].setText("java.lang.package");
-            jb[1].setText("java.util.package ");
-            jb[2].setText("java.lo.package");
-            jb[3].setText("None");
-        }
-        if (current == 3) 
-        {
-            l.setText("Que4: Expected created by try block is caaught in which block.?");
-            jb[0].setText("catch");
-            jb[1].setText("throws");
-            jb[2].setText("final");
-            jb[3].setText("thrown");
-        }
-        if (current == 4)
-        {
-            l.setText("Que5: Which of the following is not an OOPS concept in java?");
-            jb[0].setText("Polymorphism");
-            jb[1].setText("Inheritance");
-            jb[2].setText("Compilation");
-            jb[3].setText("Encapsulation");
-        }
-        if (current == 5) 
-        {
-            l.setText("Que6: When is the object created with new keyword?");
-            jb[0].setText("At run time");
-            jb[1].setText("At compile time");
-            jb[2].setText("Depends on the code");
-            jb[3].setText("None");
-        }
-        if (current == 6) 
-        {
-            l.setText("Que7: When is the finalize()method called ");
-            jb[0].setText("Before garbage collection");
-            jb[1].setText("Before an object goes out of scope");
-            jb[2].setText("Before a variable goes out of scope");
-            jb[3].setText("None");
-        }
-        if (current == 7)
-        {
-            l.setText("Que8: What is the implict return type of constructor?");
-            jb[0].setText("No return type");
-            jb[1].setText("A class object in which it is defined");
-            jb[2].setText("void");
-            jb[3].setText("None");
-        }
-        if (current == 8) 
-        {
-            l.setText("Que9: The class at the top of exception class is....?");
-            jb[0].setText("ArithmeticException");
-            jb[1].setText("Throwable");
-            jb[2].setText("Object");
-            jb[3].setText("Console");
-        }
-        if (current == 9)
-        {
-            l.setText("Que10: Which provides runtime enviroment for java byte code to be executed?");
-            jb[0].setText("JDK");
-            jb[1].setText("JVM");
-            jb[2].setText("JRE");
-            jb[3].setText("JAVAC");
-        }
-        l.setBounds(30, 40, 450, 20);
-        for (int i = 0, j = 0; i <= 90; i += 30, j++)
-            jb[j].setBounds(50, 80 + i, 200, 20);
     }
 
-    boolean check() 
-    {
-        if (current == 0)
-            return (jb[1].isSelected());
-        if (current == 1)
-            return (jb[2].isSelected());
-        if (current == 2)
-            return (jb[0].isSelected());
-        if (current == 3)
-            return (jb[1].isSelected());
-        if (current == 4)
-            return (jb[2].isSelected());
-        if (current == 5)
-            return (jb[0].isSelected());
-        if (current == 6)
-            return (jb[0].isSelected());
-        if (current == 7)
-            return (jb[2].isSelected());
-        if (current == 8)
-            return (jb[1].isSelected());
-        if (current == 9)
-            return (jb[1].isSelected());
-        return false;
-    }
-}
-// create the main class
-class OnlineExam 
-{
-    // main() method start
-    public static void main(String args[]) 
-    {
-        try 
-        {
-            // create instance of the CreateLoginForm
-            login form = new login();
-            form.setSize(400, 130); // set size of the frame
-            form.setVisible(true); // make form visible to the user
-        } catch (Exception e) 
-        {
-            // handle exception
-            JOptionPane.showMessageDialog(null, e.getMessage());
+    private class ButtonListener2 implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            totalguess.setText("");
+            trylabel.setText("The correct answer is " + rand + "!!");
+            guess.setText("");
+            guess.setEditable(false);
         }
+    }
+
+    private class ButtonListener3 implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            rand = (int) (Math.random() * 100);
+            guess.setText("");
+            totalguess.setText("");
+            trylabel.setText("Try and guess it !");
+            totalguess.setText("");
+            count = 0;
+            guess.setEditable(true);
+            guess.requestFocus();
+        }
+    }
+
+    public static void main(String[] args) {
+        new Main();
     }
 }
